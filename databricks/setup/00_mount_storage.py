@@ -19,13 +19,13 @@ spark.conf.set(
     f"fs.azure.account.key.{storage_account_name}.blob.core.windows.net",
     storage_account_key
 )
-print(f"✅ Configured direct access for storage account: {storage_account_name}")
+print(f" Configured direct access for storage account: {storage_account_name}")
 
 # ── Container paths (use these in downstream notebooks) ───────────
 containers = ["ecommerce-bronze", "ecommerce-silver", "ecommerce-gold"]
 for container in containers:
     path = f"wasbs://{container}@{storage_account_name}.blob.core.windows.net/"
-    print(f"  📂 {container}: {path}")
+    print(f"   {container}: {path}")
 
 # ── List bronze files ──────────────────────────────────────────────
 print("\n--- Bronze Files ---")
