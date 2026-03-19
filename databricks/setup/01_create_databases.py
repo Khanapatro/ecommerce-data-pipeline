@@ -7,7 +7,7 @@ databases = ["bronze", "silver", "gold"]
 
 for db in databases:
     spark.sql(f"CREATE DATABASE IF NOT EXISTS {db}")
-    print(f"✅ Database created: {db}")
+    print(f"Database created: {db}")
 
 # ── Set database locations to mounted storage ──────────────────────────────────
 spark.sql("""
