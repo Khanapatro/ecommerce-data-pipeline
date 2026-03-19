@@ -8,7 +8,7 @@ from pyspark.sql.functions import (
     coalesce, lit
 )
 
-print("📥 Reading silver tables...")
+print(" Reading silver tables...")
 orders_df    = spark.table("silver.orders")
 customers_df = spark.table("silver.customers")
 
@@ -112,7 +112,7 @@ customer_ltv.write \
     .option("overwriteSchema", "true") \
     .saveAsTable("gold.customer_ltv")
 
-print("✅ Saved to gold.customer_ltv")
+print(" Saved to gold.customer_ltv")
 
 display(
 spark.sql("""
