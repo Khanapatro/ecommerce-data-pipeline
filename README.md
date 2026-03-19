@@ -444,6 +444,37 @@ docker exec -it dbt dbt test
 
 ---
 
+## 🚨 Pipeline Failure Alerting
+
+If anything breaks in the pipeline, **you will be automatically notified via email** — no manual monitoring needed.
+
+Airflow is configured with `email_on_failure=True` in the DAG's `default_args`. The moment any task fails — whether it's `bronze_ingest`, a `silver_clean_*` job, `dbt_run`, or `dbt_test` — Airflow immediately fires an email alert containing the failed task name, error traceback, and timestamp.
+
+```python
+default_args = {
+    'owner': 'airflow',
+    'email': ['yourteam@company.com'],
+    'email_on_failure': True,
+    'email_on_retry': False,
+    'retries': 2,
+    'retry_delay': timedelta(minutes=5),
+}
+```
+
+The pipeline also retries automatically **2 times** before sending the failure alert, so transient errors (network blips, cluster startup delays) are handled gracefully without spamming your inbox.
+
+| Failure Point | What Triggers the Alert |
+|---|---|
+| ⚡ `bronze_ingest` | Auto Loader fails to read new files from ADLS |
+| 🥈 `silver_clean_*` | PySpark job errors — bad data, schema mismatch |
+| 🥇 `gold_*` | Aggregation job fails — missing upstream Silver table |
+| 🔶 `dbt_run` | A dbt model fails to build |
+| ✅ `dbt_test` | A data quality test fails (nulls, duplicates, row count) |
+
+> 📬 **Every failure at any layer sends an email** — so the pipeline is fully observable end-to-end without any external monitoring tool.
+
+---
+
 ## 📊 Results
 
 <div align="center">
