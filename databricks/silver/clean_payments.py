@@ -10,7 +10,7 @@ from pyspark.sql.types import DecimalType, IntegerType
 from pyspark.sql.window import Window
 from pyspark.sql.functions import row_number, desc
 
-print("📥 Reading bronze.payments...")
+print(" Reading bronze.payments...")
 df = spark.table("bronze.payments")
 print(f"   Raw records: {df.count()}")
 
@@ -62,7 +62,7 @@ df.write \
   .option("overwriteSchema", "true") \
   .saveAsTable("silver.payments")
 
-print("✅ Saved to silver.payments")
+print("Saved to silver.payments")
 
 display(
     spark.sql("""
