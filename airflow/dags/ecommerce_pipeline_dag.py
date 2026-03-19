@@ -9,6 +9,7 @@ from airflow.utils.dates import days_ago
 default_args = {
     'owner': 'ecommerce-pipeline',
     'depends_on_past': False,
+    #You can add your email
     'email': ['khanapatro84@gmail.com'],
     'email_on_failure': True,
     'email_on_retry': False,
