@@ -10,7 +10,7 @@ from pyspark.sql.types import DecimalType, IntegerType
 from pyspark.sql.window import Window
 from pyspark.sql.functions import row_number, desc
 
-print("📥 Reading bronze.inventory...")
+print("Reading bronze.inventory...")
 df = spark.table("bronze.inventory")
 print(f"   Raw records: {df.count()}")
 
