@@ -9,7 +9,8 @@ from airflow.utils.dates import days_ago
 default_args = {
     'owner': 'ecommerce-pipeline',
     'depends_on_past': False,
-    'email_on_failure': False,
+    'email': ['khanapatro88@outlook.com'],
+    'email_on_failure': True,
     'email_on_retry': False,
     'retries': 2,
     'retry_delay': timedelta(minutes=5),
@@ -33,6 +34,8 @@ with DAG(
     # =====================================================
     bronze_ingest = BashOperator(
         task_id='bronze_ingest',
+        retries=3,
+        retry_delay=timedelta(minutes=5),
         bash_command="""
         curl -X POST \
         https://adb-7405615288290811.11.azuredatabricks.net/api/2.1/jobs/runs/submit \
@@ -56,6 +59,8 @@ with DAG(
     # =====================================================
     silver_clean_orders = BashOperator(
         task_id='silver_clean_orders',
+        retries=2,
+        retry_delay=timedelta(minutes=5),
         bash_command="""
         curl -X POST \
         https://adb-7405615288290811.11.azuredatabricks.net/api/2.1/jobs/runs/submit \
@@ -79,6 +84,8 @@ with DAG(
     # =====================================================
     silver_clean_payments = BashOperator(
         task_id='silver_clean_payments',
+        retries=2,
+        retry_delay=timedelta(minutes=5),
         bash_command="""
         curl -X POST \
         https://adb-7405615288290811.11.azuredatabricks.net/api/2.1/jobs/runs/submit \
@@ -102,6 +109,8 @@ with DAG(
     # =====================================================
     silver_clean_customers = BashOperator(
         task_id='silver_clean_customers',
+        retries=2,
+        retry_delay=timedelta(minutes=5),
         bash_command="""
         curl -X POST \
         https://adb-7405615288290811.11.azuredatabricks.net/api/2.1/jobs/runs/submit \
@@ -125,6 +134,8 @@ with DAG(
     # =====================================================
     silver_clean_inventory = BashOperator(
         task_id='silver_clean_inventory',
+        retries=2,
+        retry_delay=timedelta(minutes=5),
         bash_command="""
         curl -X POST \
         https://adb-7405615288290811.11.azuredatabricks.net/api/2.1/jobs/runs/submit \
@@ -148,6 +159,8 @@ with DAG(
     # =====================================================
     gold_daily_revenue = BashOperator(
         task_id='gold_daily_revenue',
+        retries=2,
+        retry_delay=timedelta(minutes=5),
         bash_command="""
         curl -X POST \
         https://adb-7405615288290811.11.azuredatabricks.net/api/2.1/jobs/runs/submit \
@@ -171,6 +184,8 @@ with DAG(
     # =====================================================
     gold_top_products = BashOperator(
         task_id='gold_top_products',
+        retries=2,
+        retry_delay=timedelta(minutes=5),
         bash_command="""
         curl -X POST \
         https://adb-7405615288290811.11.azuredatabricks.net/api/2.1/jobs/runs/submit \
@@ -194,6 +209,8 @@ with DAG(
     # =====================================================
     gold_customer_ltv = BashOperator(
         task_id='gold_customer_ltv',
+        retries=2,
+        retry_delay=timedelta(minutes=5),
         bash_command="""
         curl -X POST \
         https://adb-7405615288290811.11.azuredatabricks.net/api/2.1/jobs/runs/submit \
@@ -217,6 +234,8 @@ with DAG(
     # =====================================================
     gold_payment_summary = BashOperator(
         task_id='gold_payment_summary',
+        retries=2,
+        retry_delay=timedelta(minutes=5),
         bash_command="""
         curl -X POST \
         https://adb-7405615288290811.11.azuredatabricks.net/api/2.1/jobs/runs/submit \
@@ -240,6 +259,8 @@ with DAG(
     # =====================================================
     dbt_run = BashOperator(
         task_id='dbt_run',
+        retries=2,
+        retry_delay=timedelta(minutes=5),
         bash_command='docker exec dbt dbt run --project-dir /usr/app/dbt',
     )
 
@@ -248,7 +269,27 @@ with DAG(
     # =====================================================
     dbt_test = BashOperator(
         task_id='dbt_test',
+        retries=1,
+        retry_delay=timedelta(minutes=5),
         bash_command='docker exec dbt dbt test --project-dir /usr/app/dbt',
+    )
+
+    # =====================================================
+    # TASK 12 — PIPELINE SUCCESS NOTIFICATION
+    # =====================================================
+    notify_success = BashOperator(
+        task_id='notify_success',
+        bash_command='echo "Pipeline completed successfully for {{ ds }}"',
+        trigger_rule='all_success',
+    )
+
+    # =====================================================
+    # TASK 13 — PIPELINE FAILURE NOTIFICATION
+    # =====================================================
+    notify_failure = BashOperator(
+        task_id='notify_failure',
+        bash_command='echo "Pipeline FAILED for {{ ds }} — check Airflow logs"',
+        trigger_rule='one_failed',
     )
 
     # =====================================================
@@ -278,7 +319,7 @@ with DAG(
         ]:
             silver_task >> gold_task
 
-    # gold → dbt_run (parallel gold tasks then dbt)
+    # gold → dbt_run
     [
         gold_daily_revenue,
         gold_top_products,
@@ -288,3 +329,7 @@ with DAG(
 
     # dbt_run → dbt_test
     dbt_run >> dbt_test
+
+    # notifications
+    dbt_test >> notify_success
+    dbt_test >> notify_failure
