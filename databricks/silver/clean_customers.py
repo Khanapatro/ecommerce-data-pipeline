@@ -9,7 +9,7 @@ from pyspark.sql.functions import (
 from pyspark.sql.window import Window
 from pyspark.sql.functions import row_number, desc
 
-print("📥 Reading bronze.customers...")
+print(" Reading bronze.customers...")
 df = spark.table("bronze.customers")
 print(f"   Raw records: {df.count()}")
 
