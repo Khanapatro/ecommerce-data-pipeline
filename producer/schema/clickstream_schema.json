@@ -1,0 +1,119 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Clickstream Event",
+  "description": "Schema for ecommerce user behavior events produced to ecom.clickstream topic",
+  "type": "object",
+  "required": ["event_id", "session_id", "event_type", "page_type", "event_time"],
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique event identifier"
+    },
+    "session_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Browser session identifier"
+    },
+    "customer_id": {
+      "type": ["string", "null"],
+      "description": "Logged-in customer ID (null if anonymous)"
+    },
+    "anonymous_id": {
+      "type": ["string", "null"],
+      "format": "uuid",
+      "description": "Anonymous visitor identifier (null if logged in)"
+    },
+    "event_type": {
+      "type": "string",
+      "description": "Type of user interaction",
+      "enum": [
+        "page_view",
+        "product_view",
+        "add_to_cart",
+        "remove_from_cart",
+        "wishlist_add",
+        "search",
+        "checkout_start",
+        "checkout_complete",
+        "button_click",
+        "scroll"
+      ]
+    },
+    "page_type": {
+      "type": "string",
+      "enum": ["home", "product", "category", "cart", "checkout", "search", "account", "wishlist"]
+    },
+    "page_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Full URL of the page"
+    },
+    "referrer_url": {
+      "type": ["string", "null"],
+      "format": "uri",
+      "description": "URL of the referring page"
+    },
+    "product_id": {
+      "type": ["string", "null"],
+      "description": "Product being viewed or interacted with"
+    },
+    "search_query": {
+      "type": ["array", "null"],
+      "description": "Search terms used (null if not a search event)",
+      "items": { "type": "string" }
+    },
+    "device_type": {
+      "type": "string",
+      "enum": ["desktop", "mobile", "tablet"]
+    },
+    "browser": {
+      "type": "string",
+      "enum": ["Chrome", "Firefox", "Safari", "Edge"]
+    },
+    "os": {
+      "type": "string",
+      "enum": ["Windows", "macOS", "iOS", "Android", "Linux"]
+    },
+    "ip_address": {
+      "type": "string",
+      "description": "Public IP address of visitor"
+    },
+    "country": {
+      "type": "string",
+      "description": "ISO 2-letter country code"
+    },
+    "city": {
+      "type": "string",
+      "description": "City of visitor"
+    },
+    "time_on_page_sec": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Seconds spent on the page"
+    },
+    "scroll_depth_pct": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Percentage of page scrolled"
+    },
+    "utm_source": {
+      "type": ["string", "null"],
+      "description": "UTM source parameter (google, facebook etc.)"
+    },
+    "utm_medium": {
+      "type": ["string", "null"],
+      "description": "UTM medium parameter (cpc, social etc.)"
+    },
+    "utm_campaign": {
+      "type": ["string", "null"],
+      "description": "UTM campaign name"
+    },
+    "event_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp of event"
+    }
+  }
+}

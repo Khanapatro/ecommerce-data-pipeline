@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Payment Event",
+  "description": "Schema for ecommerce payment events produced to ecom.payments topic",
+  "type": "object",
+  "required": ["payment_id", "order_id", "customer_id", "payment_method", "payment_status", "amount", "event_time"],
+  "properties": {
+    "payment_id": {
+      "type": "string",
+      "description": "Unique payment identifier",
+      "example": "PAY-X9Y8Z7W6"
+    },
+    "order_id": {
+      "type": "string",
+      "description": "Reference to order",
+      "example": "ORD-A1B2C3D4"
+    },
+    "customer_id": {
+      "type": "string",
+      "description": "Reference to customer",
+      "example": "CUST-000123"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": ["credit_card", "debit_card", "paypal", "apple_pay", "google_pay", "bank_transfer"]
+    },
+    "payment_status": {
+      "type": "string",
+      "enum": ["pending", "authorized", "captured", "failed", "refunded", "disputed"]
+    },
+    "amount": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Payment amount in currency units"
+    },
+    "currency": {
+      "type": "string",
+      "example": "USD"
+    },
+    "transaction_id": {
+      "type": "string",
+      "description": "Gateway transaction reference UUID"
+    },
+    "gateway": {
+      "type": "string",
+      "enum": ["stripe", "paypal", "braintree", "adyen", "square"]
+    },
+    "gateway_response": {
+      "type": "string",
+      "enum": ["approved", "declined", "error"]
+    },
+    "card_last_four": {
+      "type": ["string", "null"],
+      "description": "Last 4 digits of card (null for non-card payments)"
+    },
+    "billing_address": {
+      "type": "object",
+      "properties": {
+        "street":   { "type": "string" },
+        "city":     { "type": "string" },
+        "state":    { "type": "string" },
+        "zip_code": { "type": "string" },
+        "country":  { "type": "string" }
+      }
+    },
+    "failure_reason": {
+      "type": ["string", "null"],
+      "enum": [null, "insufficient_funds", "card_expired", "fraud_suspected"]
+    },
+    "processing_time_ms": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Time taken by gateway to process payment in milliseconds"
+    },
+    "event_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp of event"
+    }
+  }
+}

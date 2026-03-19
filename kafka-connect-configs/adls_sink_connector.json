@@ -1,0 +1,21 @@
+{
+  "name": "adls-sink-connector",
+  "config": {
+    "connector.class": "io.confluent.connect.azure.blob.AzureBlobStorageSinkConnector",
+    "tasks.max": "3",
+    "topics": "ecom.orders,ecom.payments,ecom.customers,ecom.inventory,ecom.clickstream",
+    "azblob.account.name": "${AZURE_STORAGE_ACCOUNT_NAME}",
+    "azblob.account.key": "${AZURE_STORAGE_ACCOUNT_KEY}",
+    "azblob.container.name": "ecommerce-bronze",
+    "format.class": "io.confluent.connect.azure.blob.format.json.JsonFormat",
+    "flush.size": "10",
+    "rotate.interval.ms": "10000",
+    "storage.class": "io.confluent.connect.azure.blob.storage.AzureBlobStorage",
+    "confluent.topic.bootstrap.servers": "kafka:29092",
+    "confluent.topic.replication.factor": "1",
+    "topics.dir": "bronze",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "false"
+  }
+}

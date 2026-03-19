@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Inventory Event",
+  "description": "Schema for ecommerce inventory update events produced to ecom.inventory topic",
+  "type": "object",
+  "required": ["inventory_id", "product_id", "warehouse_id", "quantity_on_hand", "event_time"],
+  "properties": {
+    "inventory_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique inventory event identifier"
+    },
+    "product_id": {
+      "type": "string",
+      "description": "Reference to product",
+      "example": "PROD-0042"
+    },
+    "product_name": { "type": "string" },
+    "category":     { "type": "string" },
+    "sku": {
+      "type": "string",
+      "description": "Stock keeping unit code",
+      "example": "SKU-ABCD-1234"
+    },
+    "warehouse_id": {
+      "type": "string",
+      "description": "Warehouse identifier",
+      "example": "WH-03"
+    },
+    "warehouse_location": {
+      "type": "string",
+      "description": "Geographic location of warehouse",
+      "enum": ["US-EAST", "US-WEST", "US-CENTRAL", "EU-WEST", "APAC"]
+    },
+    "quantity_on_hand": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total units physically in warehouse"
+    },
+    "quantity_reserved": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Units reserved for pending orders"
+    },
+    "reorder_point": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Stock level that triggers reorder"
+    },
+    "reorder_quantity": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Units to order when reorder point is hit"
+    },
+    "unit_cost": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Cost per unit to the company"
+    },
+    "last_restock_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of last inventory restock (YYYY-MM-DD)"
+    },
+    "supplier_id": {
+      "type": "string",
+      "description": "Reference to supplier",
+      "example": "SUP-007"
+    },
+    "is_active": {
+      "type": "boolean",
+      "description": "Whether product is actively stocked"
+    },
+    "event_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp of event"
+    }
+  }
+}

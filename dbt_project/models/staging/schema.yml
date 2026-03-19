@@ -1,0 +1,47 @@
+version: 2
+
+models:
+  - name: stg_orders
+    description: "Cleaned orders from silver.orders table"
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+      - name: customer_id
+        tests:
+          - not_null
+      - name: total_amount
+        tests:
+          - not_null
+
+  - name: stg_payments
+    description: "Cleaned payments from silver.payments table"
+    columns:
+      - name: payment_id
+        tests:
+          - not_null
+          - unique
+      - name: order_id
+        tests:
+          - not_null
+      - name: payment_status
+        tests:
+          - not_null
+
+  - name: stg_customers
+    description: "Cleaned customers from silver.customers table"
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+          - unique
+      - name: email
+        tests:
+          - not_null
+
+  - name: stg_inventory
+    description: "Cleaned inventory from silver.inventory table"
+    columns:
+      - name: product_id
+        tests:
+          - not_null

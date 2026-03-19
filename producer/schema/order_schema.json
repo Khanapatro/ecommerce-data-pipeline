@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Order Event",
+  "description": "Schema for ecommerce order events produced to ecom.orders topic",
+  "type": "object",
+  "required": ["order_id", "customer_id", "status", "items", "order_total", "event_time"],
+  "properties": {
+    "order_id": {
+      "type": "string",
+      "description": "Unique order identifier",
+      "example": "ORD-A1B2C3D4"
+    },
+    "customer_id": {
+      "type": "string",
+      "description": "Reference to customer",
+      "example": "CUST-000123"
+    },
+    "status": {
+      "type": "string",
+      "description": "Current order status",
+      "enum": ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled", "returned"]
+    },
+    "items": {
+      "type": "array",
+      "description": "List of ordered items",
+      "items": {
+        "type": "object",
+        "required": ["product_id", "quantity", "line_total"],
+        "properties": {
+          "product_id":   { "type": "string" },
+          "product_name": { "type": "string" },
+          "category":     { "type": "string" },
+          "unit_price":   { "type": "number" },
+          "quantity":     { "type": "integer", "minimum": 1 },
+          "discount":     { "type": "number", "minimum": 0, "maximum": 1 },
+          "line_total":   { "type": "number", "minimum": 0 }
+        }
+      }
+    },
+    "item_count":     { "type": "integer", "minimum": 1 },
+    "subtotal":       { "type": "number", "minimum": 0 },
+    "tax":            { "type": "number", "minimum": 0 },
+    "shipping_cost":  { "type": "number", "minimum": 0 },
+    "order_total":    { "type": "number", "minimum": 0 },
+    "currency":       { "type": "string", "example": "USD" },
+    "shipping_address": {
+      "type": "object",
+      "properties": {
+        "street":   { "type": "string" },
+        "city":     { "type": "string" },
+        "state":    { "type": "string" },
+        "zip_code": { "type": "string" },
+        "country":  { "type": "string" }
+      }
+    },
+    "shipping_method": {
+      "type": "string",
+      "enum": ["standard", "express", "overnight", "pickup"]
+    },
+    "promo_code": { "type": ["string", "null"] },
+    "channel": {
+      "type": "string",
+      "enum": ["web", "mobile_app", "marketplace", "in_store"]
+    },
+    "event_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp of event"
+    }
+  }
+}

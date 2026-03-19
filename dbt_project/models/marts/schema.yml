@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: fct_orders
+    description: "Fact table — orders joined with payment info"
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+      - name: total_amount
+        tests:
+          - not_null
+
+  - name: dim_customers
+    description: "Customer dimension with segmentation and LTV"
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+          - unique
+
+  - name: dim_products
+    description: "Product dimension with stock status"
+    columns:
+      - name: product_id
+        tests:
+          - not_null
+
+  - name: revenue_daily
+    description: "Daily revenue aggregation"
+    columns:
+      - name: order_date
+        tests:
+          - not_null
