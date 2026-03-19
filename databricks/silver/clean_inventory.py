@@ -86,7 +86,7 @@ df.write \
   .option("overwriteSchema", "true") \
   .saveAsTable("silver.inventory")
 
-print("✅ Saved to silver.inventory")
+print(" Saved to silver.inventory")
 
 display(
 spark.sql("""
