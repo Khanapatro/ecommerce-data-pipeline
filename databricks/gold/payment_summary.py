@@ -7,7 +7,7 @@ from pyspark.sql.functions import (
     when, current_timestamp, lit
 )
 
-print("📥 Reading silver.payments...")
+print(" Reading silver.payments...")
 df = spark.table("silver.payments")
 print(f"   Records: {df.count()}")
 
@@ -67,7 +67,7 @@ payment_method_summary.write \
     .option("overwriteSchema", "true") \
     .saveAsTable("gold.payment_summary")
 
-print("✅ Saved to gold.payment_summary")
+print(" Saved to gold.payment_summary")
 
 display(
 spark.sql("""
